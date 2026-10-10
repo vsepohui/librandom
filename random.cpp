@@ -1,6 +1,10 @@
 #include <math.h>
 #include <string>
 #include <chrono>
+#include <ctime>
+#include <time.h>
+#include <iomanip>
+#include <iostream>
 #include "random.h"
 
 
@@ -15,7 +19,6 @@ Random::Random(double seed) {
 
 Random::Random() {
 	this->seed = this->_get_new_seed();
-	printf("SEED = %f\n", this->seed);
 }
 
 double Random::rand (unsigned num){
@@ -49,10 +52,30 @@ double Random::rand (unsigned num){
 	return num ? (int) (num * r) : r;
 }
 
+
 double Random::_get_new_seed () {
-	auto now = std::chrono::high_resolution_clock::now();
-    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-	return static_cast<long int> (now_c);
+	std::chrono::time_point< std::chrono::system_clock > now = std::chrono::system_clock::now();
+	auto duration = now.time_since_epoch();
+
+	auto milliseconds = std::chrono::duration_cast< std::chrono::milliseconds >( duration );
+	duration -= milliseconds;
+
+	auto microseconds = std::chrono::duration_cast< std::chrono::microseconds >( duration );
+	duration -= microseconds;
+
+	auto nanoseconds = std::chrono::duration_cast< std::chrono::nanoseconds >( duration );
+
+	char buff3[255];
+	sprintf(buff3, "%d%d%d", milliseconds.count(), microseconds.count(), nanoseconds.count());
+	int ms = abs(atoi(buff3));
+  
+	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+	
+	char buff[255], buff2[255];
+	sprintf(buff, "%d", static_cast<long int> (now_c));
+	sprintf(buff2, "%d", ms);
+	
+	return atof((std::string(buff)+ "."+ std::string(buff2)).c_str());
 }
 
 double Random::_harmonic() {
