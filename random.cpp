@@ -17,6 +17,10 @@ Random::Random() {
 	this->seed = this->_get_new_seed();
 }
 
+double Random::get_seed () {
+	return this->seed;
+}
+
 double Random::rand (unsigned num){
 	double r = (this->_harmonic()+1.0)/2.0+1.5;
 	
