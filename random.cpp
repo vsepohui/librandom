@@ -1,10 +1,6 @@
 #include <math.h>
 #include <string>
 #include <chrono>
-#include <ctime>
-#include <time.h>
-#include <iomanip>
-#include <iostream>
 #include "random.h"
 
 
