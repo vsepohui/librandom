@@ -5,9 +5,8 @@
 
 int main () {
 	Random *r = new Random(42.0);
-	for (int i = 0 ; i < 16 ; i ++) {
+	for (int i = 0 ; i < 1024*1000 ; i ++) {
 		double rand = r->rand(256);
-		printf("%d\n", (int) rand);
-		//fputc((char)(int)rand, stdout);
+		fputc((char)(int)rand, stdout);
 	}
 }
