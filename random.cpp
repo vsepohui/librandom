@@ -13,12 +13,15 @@
 
 #include <math.h>
 #include <string>
-#include <regex>
 #include "random.h"
 
 Random::Random(double seed) {
 	this->seed = seed;
-	
+}
+
+std::string drop_dot (std::string s) {
+	int pos = s.find(".");
+	return std::string(s.substr(0, pos - 1) + s.substr(pos + 1, s.length() - 1));
 }
 
 double Random::rand (unsigned num){
@@ -35,9 +38,9 @@ double Random::rand (unsigned num){
 	sprintf(buff, "%0.42g", r);
 	std::string s(buff);
 	
-    static const auto regexp = std::regex({"\\."});
-    auto s2 = std::regex_replace(s, regexp, "");
-    
+	
+	std::string s2 = drop_dot(s);
+	    
     r *= atoi( s2.substr(s2.length() > 5 ? s2.length()-6 : 0, s2.length()-1).c_str() );
     
 //    printf("%d\n", atoi( s2.substr(s2.length() > 5 ? s2.length()-6 : 0, s2.length()-1).c_str() ));
@@ -51,7 +54,7 @@ double Random::rand (unsigned num){
     
     s3 = s3.substr(0, 22);
    
-    s3 = std::regex_replace(s3, regexp, "");
+	s3 = drop_dot(s3);
 	s3 = std::string("0.") + s3;
 
 	r = atof(s3.c_str());
