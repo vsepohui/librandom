@@ -1,5 +1,6 @@
 #include <math.h>
 #include <string>
+#include <chrono>
 #include "random.h"
 
 
@@ -10,6 +11,11 @@ std::string drop_dot (std::string s) {
 
 Random::Random(double seed) {
 	this->seed = seed;
+}
+
+Random::Random() {
+	this->seed = this->_get_new_seed();
+	printf("SEED = %f\n", this->seed);
 }
 
 double Random::rand (unsigned num){
@@ -41,6 +47,12 @@ double Random::rand (unsigned num){
 	r = atof(r2.c_str());
 	 
 	return num ? (int) (num * r) : r;
+}
+
+double Random::_get_new_seed () {
+	auto now = std::chrono::high_resolution_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+	return static_cast<long int> (now_c);
 }
 
 double Random::_harmonic() {
