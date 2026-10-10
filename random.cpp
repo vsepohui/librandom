@@ -21,17 +21,16 @@ Random::Random(double seed) {
 
 std::string drop_dot (std::string s) {
 	int pos = s.find(".");
-	return std::string(s.substr(0, pos - 1) + s.substr(pos + 1, s.length() - 1));
+	return std::string(s.substr(0, pos) + s.substr(pos + 1, s.length() - 1));
 }
 
 double Random::rand (unsigned num){
-	double r = (this->_harmonic()+1.0)/2.0 + 1.5;
+	double r = (this->_harmonic()+1.0)/2.0+1.5;
 	
-		
 	this->seed *= r;
 	
 	while (this->seed >= 100000000) {
-			this->seed /= 10.0;
+			this->seed /= 2.0;
 	}
 	
 	char buff [1024];
@@ -39,25 +38,19 @@ double Random::rand (unsigned num){
 	std::string s(buff);
 	
 	
-	std::string s2 = drop_dot(s);
-	    
-    r *= atoi( s2.substr(s2.length() > 5 ? s2.length()-6 : 0, s2.length()-1).c_str() );
+	s = drop_dot(s);
+    r *= atoi( s.substr(s.length() > 4 ? s.length()-5 : 0, s.length()).c_str() );
     
-//    printf("%d\n", atoi( s2.substr(s2.length() > 5 ? s2.length()-6 : 0, s2.length()-1).c_str() ));
-	
-
-    s2 = std::to_string(r);
-
 	char buff2 [1024];
 	sprintf(buff2, "%0.42g", r);
-	std::string s3(buff2);
+	std::string r2(buff2);
     
-    s3 = s3.substr(0, 22);
+    r2 = r2.substr(0, r2.length() < 22 ? r2.length() : 22);
    
-	s3 = drop_dot(s3);
-	s3 = std::string("0.") + s3;
+	r2 = drop_dot(r2);
+	r2 = std::string("0.") + r2;
 
-	r = atof(s3.c_str());
+	r = atof(r2.c_str());
 	 
 	return num ? (int) (num * r) : r;
 }
