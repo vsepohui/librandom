@@ -1,5 +1,8 @@
 #include <EXTERN.h>               /* From the Perl core */
 #include <perl.h>                 /* From the Perl core */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static PerlInterpreter *my_perl;    /* The Perl interpreter */
 
@@ -11,21 +14,37 @@ static char *embedding[] = { "", "-e", " \
 		my $seed = shift;\
 		my $num = shift;\
 		my $r = Strong::Random->new($seed);\
+		$r->srand($seed);\
 		my $val = $r->rand($num);\
-		return ($r->{seed}, $val);\
+		return sprintf \"%0.42f %0.42f\", $r->{seed}, $val;\
 	}\
 \
 	package Strong::Random; \
 	use 5.022; use warnings; sub new {  my $class = shift;  my $seed  = shift;    my $self = bless {}, $class;    $self->srand($seed ? abs $seed : undef);    return $self; }   \
 	sub _shuffle_seed { ... }\
-	  sub _harmonic {  my $self = shift;  my $x = $self->{seed};    state $half_freq = 2/7.0;   my $step = int ($x / $half_freq); $x -= $step * $half_freq; return ($step % 2 ? -1 : 1)*sqrt (1 - $x*$x); }  \
+	  sub _harmonic {  \
+	  my $self = shift; \
+	   my $x = $self->{seed}; \
+	      state $half_freq = 2/7.0;\
+			\
+	         my $step = int ($x / $half_freq);\
+	          $x -= $step * $half_freq; \
+	          return ($step % 2 ? -1 : 1)*sqrt (1 - $x*$x); }  \
+	    \
 	  sub srand {  my $self = shift;  my $seed = shift // $self->_shuffle_seed();    while ($seed >= 100000000) {  $seed /= 2;  }    $self->{seed} = $seed; } \
-	sub rand {  my $self = shift;  my $num = shift;    my $r = ($self->_harmonic()+1)/2.0;   $self->{seed} *= $r+1.5;  $self->{seed} /= 2 if ($self->{seed} >= 100000000);   my $s = $r;  $s =~ s/\\.//;  $r *= substr($s, -5, -1) || 0;  $r = substr($r, 0, 22);  $r =~ s/\\.//;  $r = '0.'. $r;   return $num ? int $num * $r : $r; }  1;  \
+	sub rand {  my $self = shift;  my $num = shift;  \
+		my $r = ($self->_harmonic()+1)/2.0;\
+		   $self->{seed} *= $r+1.5; \
+		    $self->{seed} /= 2 if ($self->{seed} >= 100000000);   \
+		    my $s = $r;  $s =~ s/\\.//;  $r *= substr($s, -5, -1) || 0; \
+		    $r = substr($r, 0, 22);  $r =~ s/\\.//;  $r = '0.'. $r;  \
+		     return $num ? int ($num * $r) : $r; \
+	}  1;  \
 			\
 	\
 	" };
 
-struct crypter_result random (float &seed, unsigned num) {
+double random2 (double *seed, unsigned num) {
 	int argc = 0;
 	
 	char **argv;
@@ -44,18 +63,34 @@ struct crypter_result random (float &seed, unsigned num) {
 
 	PUSHMARK(SP);
 	EXTEND(SP, 2);
-	PUSHs(sv_2mortal(newSVnv(seed)));
-	PUSHs(sv_2mortal(newSViv(num)));
+	
+	char b1[1024], b2[1024];
+	
+	sprintf(b1, "%0.42lf", *seed);
+	sprintf(b2, "%d", num);
+
+	PUSHs(sv_2mortal(newSVpv(b1, (int)strlen(b1))));
+	PUSHs(sv_2mortal(newSVpv(b2, (int)strlen(b2))));
+
 	PUTBACK;
 
 	// Call Perl method
 	call_pv("random", G_SCALAR); 
 	SPAGAIN;
 
-	STRLEN len;
-	seed = POPn;
-	float r = POPn;
+	STRLEN len1;
+	SV *sv1 = POPs;
+	char *s1 = SvPVx(sv1, len1);
+	
+	double r;
 
+	char *rs1 = malloc(sizeof(char)*len1+1);
+	memcpy(rs1, s1, sizeof(char)*len1);
+	rs1[len1] = (char)0;
+	
+	sscanf(rs1, "%lf %lf", seed, &r);
+
+	
 	PUTBACK;
 	FREETMPS;
 	LEAVE;    
