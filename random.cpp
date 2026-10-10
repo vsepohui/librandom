@@ -1,27 +1,15 @@
-/*	package Strong::Random; \
-
-	 
-	sub rand {  my $self = shift;  my $num = shift;  \
-		my $r = ($self->_harmonic()+1)/2.0;\
-		   $self->{seed} *= $r+1.5; \
-		    $self->{seed} /= 2 if ($self->{seed} >= 100000000);   \
-		    my $s = $r;  $s =~ s/\\.//;  $r *= substr($s, -5, -1) || 0; \
-		    $r = substr($r, 0, 22);  $r =~ s/\\.//;  $r = '0.'. $r;  \
-		     return $num ? int ($num * $r) : $r; \
-	}  1;  \
-*/
-
 #include <math.h>
 #include <string>
 #include "random.h"
 
-Random::Random(double seed) {
-	this->seed = seed;
-}
 
 std::string drop_dot (std::string s) {
 	int pos = s.find(".");
 	return std::string(s.substr(0, pos) + s.substr(pos + 1, s.length() - 1));
+}
+
+Random::Random(double seed) {
+	this->seed = seed;
 }
 
 double Random::rand (unsigned num){
