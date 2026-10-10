@@ -14,7 +14,7 @@ class Random {
 
 Black-Noise Generator like best /dev/random:
 
-## demo.ccp
+## demo.cpp
 
 ```
 #include <stdio.h>
