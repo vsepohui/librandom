@@ -4,9 +4,11 @@ librandom++ - C++ Library for Strong Random!
 
 ```
 class Random {
-	public: 
+	public:
 		Random(double seed);
+		Random();
 		double rand(unsigned num);
+		double get_seed();
 };
 ```
 
