@@ -21,7 +21,7 @@ Black-Noise Generator like best /dev/random:
 #include "random.h"
 
 int main () {
-	Random *r = new Random(42.0);
+	Random *r = new Random;
 	while (1) {
 		fputc((char)(int)r->rand(256), stdout);
 	}
