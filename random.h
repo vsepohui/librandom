@@ -1,6 +1,7 @@
 #include <math.h>
 #include <string>
 #include <chrono>
+#include <unistd.h>
 
 
 class Random {
@@ -96,9 +97,9 @@ double Random::_get_new_seed () {
 	
 	char buff[255], buff2[255];
 	sprintf(buff, "%d", static_cast<long int> (now_c));
-	sprintf(buff2, "%d", ms);
+	sprintf(buff2, "%d%d", ms, getpid());
 	
-	return atof((std::string(buff)+ "."+ std::string(buff2)).c_str());
+	return rand() * atof((std::string(buff)+ "."+ std::string(buff2)).c_str());
 }
 
 double Random::_harmonic() {
