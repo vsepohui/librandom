@@ -21,7 +21,7 @@ double Random::get_seed () {
 	return this->seed;
 }
 
-double Random::rand (unsigned num){
+double Random::rand (){
 	double r = (this->_harmonic()+1.0)/2.0+1.5;
 	
 	this->seed *= r;
@@ -49,7 +49,13 @@ double Random::rand (unsigned num){
 
 	r = atof(r2.c_str());
 	 
-	return num ? (int) (num * r) : r;
+	return r;
+}
+
+
+unsigned Random::rand (unsigned num){
+	double r = this->rand();
+	return (unsigned) (num * r);
 }
 
 

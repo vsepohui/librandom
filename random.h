@@ -2,7 +2,8 @@ class Random {
 	public: 
 		Random(double seed);
 		Random();
-		double rand(unsigned num);
+		unsigned rand(unsigned num);
+		double rand ();
 		double get_seed();
 	private:
 		double seed;
