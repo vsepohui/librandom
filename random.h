@@ -3,7 +3,6 @@
 #include <chrono>
 
 
-
 class Random {
 	public: 
 		Random(double seed);
@@ -25,6 +24,10 @@ std::string drop_dot (std::string s) {
 
 Random::Random(double seed) {
 	this->seed = seed;
+	
+	while (this->seed >= 100000000.0) {
+		this->seed /= 2.0;
+	}	
 }
 
 Random::Random() {
@@ -40,8 +43,8 @@ double Random::rand (){
 	
 	this->seed *= r;
 	
-	while (this->seed >= 100000000) {
-			this->seed /= 2.0;
+	while (this->seed >= 100000000.0) {
+		this->seed /= 2.0;
 	}
 	
 	char buff [1024];
@@ -62,7 +65,7 @@ double Random::rand (){
 	r2 = std::string("0.") + r2;
 
 	r = atof(r2.c_str());
-	 
+	
 	return r;
 }
 
