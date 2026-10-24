@@ -1,22 +1,7 @@
 #include <math.h>
 #include <string>
 #include <chrono>
-#include <unistd.h>
-
-
-class Random {
-	public: 
-		Random(double seed);
-		Random();
-		unsigned rand(unsigned num);
-		double rand ();
-		double get_seed();
-	private:
-		double seed;
-		double _harmonic();
-		double _get_new_seed();
-};
-
+#include "random++.h"
 
 std::string drop_dot (std::string s) {
 	int pos = s.find(".");
@@ -25,10 +10,6 @@ std::string drop_dot (std::string s) {
 
 Random::Random(double seed) {
 	this->seed = seed;
-	
-	while (this->seed >= 100000000.0) {
-		this->seed /= 2.0;
-	}	
 }
 
 Random::Random() {
@@ -44,8 +25,8 @@ double Random::rand (){
 	
 	this->seed *= r;
 	
-	while (this->seed >= 100000000.0) {
-		this->seed /= 2.0;
+	while (this->seed >= 100000000) {
+			this->seed /= 2.0;
 	}
 	
 	char buff [1024];
@@ -66,7 +47,7 @@ double Random::rand (){
 	r2 = std::string("0.") + r2;
 
 	r = atof(r2.c_str());
-	
+	 
 	return r;
 }
 
@@ -97,9 +78,9 @@ double Random::_get_new_seed () {
 	
 	char buff[255], buff2[255];
 	sprintf(buff, "%d", static_cast<long int> (now_c));
-	sprintf(buff2, "%d%d", ms, getpid());
+	sprintf(buff2, "%d", ms);
 	
-	return rand() * atof((std::string(buff)+ "."+ std::string(buff2)).c_str());
+	return atof((std::string(buff)+ "."+ std::string(buff2)).c_str());
 }
 
 double Random::_harmonic() {
