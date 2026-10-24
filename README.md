@@ -34,7 +34,7 @@ int main () {
 ## Compile
 
 ```
-g++ -o demo demo.cpp random.cpp
+g++ -o demo demo.cpp random++.cpp
 ```
 
 
